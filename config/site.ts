@@ -10,19 +10,19 @@ export const siteConfig = {
 		},
     {
       label: "Docs",
-      href: "/docs",
+      href: "/fries",
     },
     {
       label: "Pricing",
-      href: "/pricing",
+      href: "/burgers",
     },
     {
       label: "Blog",
-      href: "/blog",
+      href: "/hotdogs",
     },
     {
       label: "About",
-      href: "/about",
+      href: "/pizza",
     }
 	],
 	navMenuItems: [
