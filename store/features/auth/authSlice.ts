@@ -48,6 +48,7 @@ const userSlice = createSlice({
                 state.error = null;
             })
             .addCase(login.fulfilled, (state, action) => {
+                console.log(action.payload)
                 state.loading = false;
                 state.user = jwtDecode(action?.payload?.data.token);
                 state.token = action?.payload?.data.token;

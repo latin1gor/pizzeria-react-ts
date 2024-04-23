@@ -40,6 +40,7 @@ export const Navbar = () => {
 	const {user} = useAppSelector(state => state.user)
 	const [role, setRole] = useState<string>("")
 	const [email, setEmail] = useState<string>("")
+	console.log(user, "user!")
 	useEffect(() => {
 		if (user) {
 			setRole(user[DecodedToken.Role])
