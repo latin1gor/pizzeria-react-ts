@@ -8,21 +8,11 @@ import {
 	NavbarMenuItem,
 } from "@nextui-org/navbar";
 import { Link } from "@nextui-org/link";
-import {
-	Dropdown,
-	DropdownTrigger,
-	DropdownMenu,
-	DropdownItem
-} from "@nextui-org/dropdown";
 import { siteConfig } from "@/config/site";
 import NextLink from "next/link";
-import {Avatar} from "@nextui-org/avatar";
-import {Chip} from "@nextui-org/chip";
 import Logo from "@/assets/Logo";
 import {useEffect, useState} from "react";
 import {useAppDispatch, useAppSelector} from "@/hooks/useStore";
-import {state} from "sucrase/dist/types/parser/traverser/base";
-import {getProducts} from "@/store/services/productService";
 import Cookies from "js-cookie";
 import {useRouter} from "next/navigation";
 import {UserDropdown} from "@/components/navbar/user-dropdown";
@@ -31,7 +21,8 @@ import {Button} from "@nextui-org/button";
 
 export const enum DecodedToken {
 	Role = "http://schemas.microsoft.com/ws/2008/06/identity/claims/role",
-	Email = "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress"
+	Email = "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress",
+	CustomerId = "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier"
 }
 
 export const Navbar = () => {

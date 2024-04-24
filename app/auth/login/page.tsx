@@ -13,6 +13,7 @@ import {signInSchema} from "@/types/validation";
 import {Input} from "@nextui-org/input";
 import Logo from "@/assets/Logo";
 import {clearError} from "@/store/features/auth/authSlice";
+import Cookies from "js-cookie";
 
 const Login = () => {
     const router = useRouter()
@@ -21,6 +22,9 @@ const Login = () => {
     useEffect(() => {
         dispatch(clearError());
     }, [dispatch]);
+    useEffect(() => {
+        Cookies.remove("jwt")
+    }, []);
     const {
         register: reg,
         handleSubmit,

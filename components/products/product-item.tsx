@@ -3,6 +3,7 @@ import { FC } from "react";
 import {IProduct} from "@/store/features/product/productSlice";
 import {useRouter} from "next/navigation";
 import {Image} from "@nextui-org/image";
+import {cn} from "@/lib/utils";
 
 const ProductItem: FC<{ product: IProduct }> = ({ product }) => {
     const router = useRouter()
@@ -29,9 +30,17 @@ const ProductItem: FC<{ product: IProduct }> = ({ product }) => {
                 </h2>
             </div>
             <div className={"w-full px-2 "}>
-                <div className={"flex items-center justify-between px-2"}>
+                <div className={"flex items-center justify-between pl-2 pb-2"}>
                     <h3 className={"pb-1 font-bold"}>{product.itemPrice + "$"}</h3>
+                    <div className={cn(" border-2 bg-orange-400 rounded-md m-1 mr-0 w-9 h-9 p-1", {
+                        "bg-blue-300": product.itemSize === "S",
+                        "bg-red-400": product.itemSize === "XL",
+                        "bg-orange-200": product.itemSize === "M",
+
+                    })}> {product.itemSize}</div>
+
                 </div>
+
             </div>
         </div>
     );

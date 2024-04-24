@@ -16,6 +16,16 @@ export const getCustomers = createAsyncThunk<any, FetchProductsParams>("customer
     }
 });
 
+export const getIngredients =  async () => {
+    try {
+        const params: FetchProductsParams = {};
+        const response = await instance.get("/Ingredients", );
+        return response.data;
+    } catch (error) {
+        console.error("Error while checking authentication:", error);
+    }
+}
+
 
 export const getCustomerCount = async ({ pageNumber, pageSize, itemCategory}: FetchProductsParams) => {
     try {
@@ -80,6 +90,28 @@ export const postItem = async (data: FormData) => {
 }
 
 
+export const postAddress = async (address1: string, city:string) => {
+    try {
+        const res = await instance.post("/Addresses", {address1, address2: "", zipCode: "", City: city} )
+        return res.data.addressId
+
+    } catch (error) {
+        console.error("Error while checking authentication:", error);
+    }
+}
+
+
+export const postOrder = async (date: string, customerId: string | null, itemId: string, quantity: number, isDelivery: boolean, deliveryAddressId: string | null) => {
+    try {
+        await instance.post("/Orders", {date, customerId: customerId, orderItems: [{itemId, quantity}], delivery: isDelivery, deliveryAddressId})
+
+
+    } catch (error) {
+        console.error("Error while checking authentication:", error);
+    }
+}
+
+
 export const postCustomer = async (firstName: string, lastName: string, phoneNumber: string, email: string, password: string ) => {
     try {
 
@@ -92,9 +124,9 @@ export const postCustomer = async (firstName: string, lastName: string, phoneNum
 }
 
 
-export const postRecipe = async (recipeName: string) => {
+export const postRecipe = async (payload: object) => {
     try {
-        const res = await instance.post("/Recipes", {recipeName, cookingTime: "00:30:00", recipeIngredients: [{ingredientId: '18deeee7-756d-42f6-9f76-a52fe810de89', ingredientWeight: "30"}]})
+        const res = await instance.post("/Recipes", payload)
         return res
     } catch (e){
         console.log(e)

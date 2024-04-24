@@ -100,11 +100,7 @@ const Customers = () => {
             case "actions":
                 return (
                     <div className="relative flex items-end gap-2">
-                        <Tooltip content="Details">
-              <span className="text-lg text-default-400 cursor-pointer active:opacity-50">
-                <EyeIcon />
-              </span>
-                        </Tooltip>
+
                       <AdminModal entity={"customer"} customerId={user.customerId} firstName={user.firstName} lastName={user.lastName} phoneNumber={user.phoneNumber}  />
                         <Tooltip color="danger" content="Delete user">
               <span className="text-lg text-danger cursor-pointer active:opacity-50" >

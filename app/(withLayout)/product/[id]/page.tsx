@@ -7,6 +7,8 @@ import {FaApple} from "react-icons/fa";
 import {Image} from "@nextui-org/image";
 import {Button} from "@nextui-org/button";
 import {Table, TableBody, TableCell, TableHeader, TableRow} from "@nextui-org/table";
+import {BiShoppingBag} from "react-icons/bi";
+import OrderModal from "@/components/modal/order-modal";
 
 interface Props {
     params: {
@@ -48,33 +50,12 @@ export default function ProductPage({params: {id}}: Props) {
 
                                 <h2 className={"text-4xl font-bold"}>{product.itemPrice + "$"} </h2>
                                 <div>Size: ................... {product.itemSize} </div>
-                                <div>Category: ........... {product.recipeId} </div>
+                                <div>Category: ........... {product.itemCategory} </div>
                             </div>
 
                             <div className={"flex flex-col w-[40%]"}>
-                                <div className={"flex space-x-3"}>
-                                    <div className={"flex flex-grow space-x-3"}>
-                                        <Button
-                                            className={
-                                                " transition duration-300 ease-in-out flex-grow"
-                                            }
-                                        >
-                                            Buy now
-                                        </Button>
-                                        <Button variant={"solid"} className={"flex-grow"}>
-                                            Add to bag
-                                        </Button>
-                                    </div>
-                                </div>
-                                <div className={"flex mt-2"}>
-                                    <Button
-                                        className={
-                                            "bg-gray-100 text-black hover:bg-gray-200 transition duration-300 flex items-center justify-center flex-grow"
-                                        }
-                                    >
-                                        <FaApple className={"text-xl"}/> <span>Pay</span>
-                                    </Button>
-                                </div>
+
+                               <OrderModal ItemId={product.itemId} ItemName={product.itemName} ItemPrice={product.itemPrice} />
                             </div>
                         </div>
                     </div>

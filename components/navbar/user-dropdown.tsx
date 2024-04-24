@@ -4,6 +4,7 @@ import {Avatar} from "@nextui-org/avatar";
 import {Chip} from "@nextui-org/chip";
 import Cookies from "js-cookie";
 import {useRouter} from "next/navigation";
+import {Link} from "@nextui-org/react";
 
 interface IUserDropdown {
     role: string,
@@ -32,12 +33,16 @@ const router = useRouter()
                     <p className="font-semibold">{email}</p>
                 </DropdownItem>
                 <DropdownItem key="role" className={"flex justify-between w-full"}>Role: <Chip color={"secondary"}> {role} </Chip> </DropdownItem>
-                <DropdownItem key="settings">My Settings</DropdownItem>
-                <DropdownItem key="team_settings">Team Settings</DropdownItem>
-                <DropdownItem key="analytics">Analytics</DropdownItem>
-                <DropdownItem key="system">System</DropdownItem>
-                <DropdownItem key="configurations">Configurations</DropdownItem>
-                <DropdownItem key="help_and_feedback">Help & Feedback</DropdownItem>
+                {role?.toLowerCase() !== "customer" && (
+                    <DropdownItem key={role}>
+                        <Link className="text-black w-full" href={'/' + role.toLowerCase()}>
+                            {role} page
+                        </Link>
+                    </DropdownItem>
+                )}
+                <DropdownItem key="role"><Link className={"text-black w-full"} href={"/orders"}>Orders</Link></DropdownItem>
+
+
                 <DropdownItem key="logout" color="danger" onClick={logout}>
                     Log Out
                 </DropdownItem>
