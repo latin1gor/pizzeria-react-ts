@@ -19,6 +19,7 @@ import {CgAdd} from "react-icons/cg";
 import {getProducts} from "@/store/services/productService";
 import {Divider} from "@nextui-org/divider";
 import {TimeValue} from "@react-types/datepicker";
+import {formatTime} from "@/lib/utils";
 
 interface ItemsModalProps {
     ItemName?: string
@@ -38,6 +39,10 @@ interface Iingredients {
     ingredientPrice: number,
     quantityInStock: number
 }
+
+
+
+
 export default function ItemsModal({ItemName, ItemCategory, ItemSize, ItemPrice, RecipeId, isPost, ItemId, ImagePath}: ItemsModalProps) {
     const dispatch = useAppDispatch()
     const {activePage, limit} = useAppSelector(state => state.product)
@@ -55,25 +60,18 @@ export default function ItemsModal({ItemName, ItemCategory, ItemSize, ItemPrice,
     const [ingredients, setIngredients] = useState<Iingredients[] | null>(null)
     const [time, setTime] = useState<TimeValue>()
     const [values, setValues] = React.useState<Selection>(new Set([]));
-
+    const [modal, setModal] = useState<boolean>(false)
     const handleSelectionChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
         setValues(new Set(e.target.value.split(",")));
     };
     useEffect(() => {
-        getIngredients().then((res) => setIngredients(res))
-    }, []);
-
-
-    function formatTime(time: TimeValue) {
-        if (time) {
-            const { hour, minute, second } = time;
-            const formattedHour = String(hour).padStart(2, '0');
-            const formattedMinute = String(minute).padStart(2, '0');
-            const formattedSecond = String(second).padStart(2, '0');
-            return `${formattedHour}:${formattedMinute}:${formattedSecond}`;
+        if (modal){
+            getIngredients().then((res) => setIngredients(res))
         }
+    }, [modal]);
 
-    }
+
+
 
 
     const changeItems = async () => {
@@ -125,7 +123,10 @@ export default function ItemsModal({ItemName, ItemCategory, ItemSize, ItemPrice,
         <>
             {isPost ?
                 <Tooltip content="Add item">
-                    <span className="text-lg text-default-400 cursor-pointer active:opacity-50" onClick={onOpen}>
+                    <span className="text-lg text-default-400 cursor-pointer active:opacity-50" onClick={() => {
+                        setModal(true)
+                        onOpen()
+                    }} >
                 <CgAdd color={"gray"} className={"cursor-pointer"} />
               </span>
                 </Tooltip>
@@ -186,7 +187,7 @@ export default function ItemsModal({ItemName, ItemCategory, ItemSize, ItemPrice,
                                     variant="bordered"
                                 /> }
 
-                                {isPost && <div className={" rounded-md  p-4"}
+                                {isPost && <div className={"flex flex-col rounded-md  py-4 space-y-4 w-full"}
                                 >
                                     <Divider className={"my-4"}/>
                                     <h2 className={"text-center "}>Create recipe</h2> <Input
@@ -198,13 +199,13 @@ export default function ItemsModal({ItemName, ItemCategory, ItemSize, ItemPrice,
                                     disabled={!!createdRecipe}
 
                                 />
-                                    {ingredients ?  <div className="flex w-full max-w-xs flex-col gap-2">
+                                    {ingredients ?  <div className="flex w-full  flex-col gap-2">
                                         <Select
-                                            label="Favorite Animal"
+                                            label="Ingredient"
                                             selectionMode="multiple"
-                                            placeholder="Select an animal"
+                                            placeholder="Select ingredients"
                                             selectedKeys={values}
-                                            className="max-w-xs"
+                                            className="w-full"
                                             onChange={handleSelectionChange}
                                         >
                                             {ingredients.map((i) => (
@@ -213,13 +214,12 @@ export default function ItemsModal({ItemName, ItemCategory, ItemSize, ItemPrice,
                                                 </SelectItem>
                                             ))}
                                         </Select>
-                                        <p className="text-small text-default-500">Selected: {Array.from(values).join(", ")}</p>
                                     </div>      : <div className={"py-4"}>Loading ingredients...</div>}
                                     <TimeInput    className={"pb-3"} value={time} onChange={setTime}  label="Cooking time"
 
 
                                     />
-                                    {!createdRecipe && <Button isDisabled={!ingredients && !recipeName.length} color={"primary"} onClick={createRecipe}>Create recipe</Button>}
+                                    {!createdRecipe ? <Button isDisabled={!ingredients && !recipeName.length} color={"primary"} onClick={createRecipe}>Create recipe</Button> : <div className={"text-success text-center"}>Recipe created and added successfully!</div>}
                                     <Divider className={"my-4"}/>
 
                                 </div>}

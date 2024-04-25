@@ -21,6 +21,7 @@ const Login = () => {
     const {error} = useAppSelector(state => state.user)
     useEffect(() => {
         dispatch(clearError());
+
     }, [dispatch]);
     useEffect(() => {
         Cookies.remove("jwt")
