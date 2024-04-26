@@ -8,6 +8,7 @@ export interface IStatisticParams {
 }
 
 export interface IGet extends IStatisticParams {
+    date?: string
     itemCategory?: "Pizza" | "Hotdog" | "Fries" | "Burger"
     uri: string
     entity: string
@@ -24,13 +25,14 @@ export const getStaffPayroll = async ({dateStart, dateEnd}: IStatisticParams) =>
         console.error("Error while checking authentication:", error);
     }
 }
-export const getStatistics = async ({dateStart, dateEnd, uri, entity, itemCategory}: IGet) => {
+export const getStatistics = async ({date, dateStart, dateEnd, uri, entity, itemCategory}: IGet) => {
     console.log(dateStart, dateEnd)
     try {
         const params: any = {}
         if (dateStart) params.dateStart = dateStart
         if (dateEnd) params.dateEnd = dateEnd
         if (itemCategory) params.itemCategory = itemCategory
+        if (date) params.date = date
         const response = await instance.get(`/Statistics/${uri}/${entity}`, {params}  );
         return response.data;
     } catch (error) {

@@ -1,23 +1,61 @@
 "use client"
-import React, {PureComponent, useEffect, useState} from 'react';
+import React, {useEffect, useState} from "react";
 import {
-    XAxis,
-    YAxis,
-    CartesianGrid,
+    Table,
+    TableHeader,
+    TableColumn,
+    TableBody,
+    TableRow,
+    TableCell,
+    User,
+    Chip,
     Tooltip,
-    ResponsiveContainer,
-    Area,
-    AreaChart
-} from 'recharts';
-import {getStaffPayroll, IStatisticParams} from "@/store/services/statisticService";
-import {Button, CalendarDate, DateInput, TimeInput} from "@nextui-org/react";
+    getKeyValue,
+    user, DateInput, Button
+} from "@nextui-org/react";
+import {Loader} from "@/components/loader/loader";
+import {FaRegCheckCircle} from "react-icons/fa";
+import {GiCancel} from "react-icons/gi";
 import {DateValue, parseDate} from "@internationalized/date";
+import {formatDate} from "@/lib/utils";
+import {getStaffPayroll} from "@/store/services/statisticService";
 import {CalendarBoldIcon} from "@nextui-org/shared-icons";
-import {formatDate, formatTime} from "@/lib/utils";
+const statusColorMap: any = {
+    active: "success",
+    paused: "danger",
+    vacation: "warning",
+};
+interface Column {
+    name: string,
+    uid: string
+}
+const columns: Column[] = [
+    {name: "POSITION", uid: "position"},
+    {name: "FIRST NAME", uid: "firstName"},
+    {name: "LAST NAME", uid: "lastName"},
+    {name: "HOURS WORKED", uid: "hoursWorked"},
+    {name: "HOURLY RATE", uid: "hourlyRate"},
+    {name: "PAYROLL", uid: "payroll"},
+
+];
 
 
 
-const StatisticChart1 = () => {
+
+
+export {columns};
+
+interface IItem {
+    staffId: string,
+    firstName: string,
+    lastName: string,
+    position: string,
+    hoursWorked: number
+    hourlyRate: number
+    payroll: number
+}
+
+const StaticticsChart1 = () => {
     const [data, setData] = useState(null)
     const [startDate, setStartDate] = useState<DateValue>(parseDate("2024-01-01"));
     const [endDate, setEndDate] = useState<DateValue>(parseDate("2024-01-02"))
@@ -36,63 +74,115 @@ const StatisticChart1 = () => {
     }, []);
 
 
-    return<div className={"flex flex-col items-center py-28"}>
-        <h1 className={"font-bold text-2xl p-3"}>Payroll staff</h1>
-        <div className={"flex justify-between h-96 w-[125vh] bg-gray-50 rounded-2xl p-4 m-2"}>
 
-        {data &&
-        <ResponsiveContainer width="100%" height="100%">
-              <AreaChart
-                width={500}
-                height={400}
-                data={data}
-                margin={{
-                    top: 10,
-                    right: 30,
-                    left: 0,
-                    bottom: 0,
-                }}
-            >
 
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="firstName"  />
-                <YAxis />
-                <Tooltip />
-                  <Area  dataKey="hourlyRate" stackId="1" stroke="#e2cc00" fill="#edbb09" />
-                  <Area type="monotone" dataKey="hoursWorked"  stackId="1" stroke="orange" fill="#F0811D" />
-                <Area type="monotone" dataKey="payroll" stackId="1" stroke="red" fill="#FF4A1C"  />
-            </AreaChart>
-        </ResponsiveContainer>
+    const renderCell = React.useCallback((item: IItem, columnKey: any) => {
+        const cellValue = item[columnKey];
+        switch (columnKey) {
+            case "position":
+                return (
+                    <div className="relative flex items-end gap-2">
+
+                        {item.position}
+                    </div>
+                );
+            case "firstName":
+                return (
+                    <div className="flex flex-col">
+                        <p className="text-bold text-sm capitalize text-default-400">{item.firstName}}</p>
+                    </div>
+                );
+            case "lastName":
+                return (
+                    <div className="relative flex items-end gap-2">
+
+                        {item.lastName}
+
+                    </div>
+                );
+            case "hoursWorked":
+                return (
+                    <div className="flex flex-col">
+                        <p className="text-bold text-sm capitalize text-default-400">{item.hoursWorked}</p>
+                    </div>
+                );
+
+            case "hourlyRate":
+                return (
+                    <div className="relative flex items-end gap-2">
+
+                        {item.hourlyRate}
+
+                    </div>
+                );
+            case "payroll":
+                return (
+                    <div className="relative flex items-end gap-2">
+
+                        {item.payroll}
+
+                    </div>
+                );
+
+            default:
+                return cellValue;
         }
+    }, [data]);
 
-    </div>
-        <div className={"w-full flex justify-between items-end p-5"}>
-            <DateInput
-                className={"w-80"}
-                label="Start date"
-                defaultValue={parseDate("2024-01-01")}
-                value={startDate}
-                onChange={setStartDate}
-                labelPlacement="outside"
-                endContent={
-                    <CalendarBoldIcon className="text-2xl text-default-400 pointer-events-none flex-shrink-0" />
-                }
-            />
-            <Button className={"w-80"} color={"primary"} onClick={() => getPayroal({dateStart: startDate, dateEnd: endDate})}>Apply</Button>
-            <DateInput
-                className={"w-80"}
-                value={endDate}
-                onChange={setEndDate}
-                label="End date"
-                defaultValue={parseDate("2024-01-01")}
-                labelPlacement="outside"
-                endContent={
-                    <CalendarBoldIcon className="text-2xl text-default-400 pointer-events-none flex-shrink-0" />
-                }
-            />
+    return (
+        <>
+            <div className={"mx-3 pb-3 flex items-center justify-between"}>
+                <h2 className={"text-2xl font-bold"}>PayrollStaff</h2>
+            </div>
+            {data ? <>
 
-        </div>
-    </div>
+
+                <Table aria-label="Example table with custom cells" className={"min-h-[400px]"}>
+
+                    <TableHeader columns={columns}>
+                        {(column) => (
+                            <TableColumn key={column.uid} align={column.uid === "actions" ? "center" : "start"}>
+                                {column.name}
+                            </TableColumn>
+                        )}
+                    </TableHeader>
+                    <TableBody items={data || []}>
+                        {(item) => (
+                            <TableRow key={crypto.randomUUID()}>
+                                {(columnKey) => <TableCell>{renderCell(item, columnKey)}</TableCell>}
+                            </TableRow>
+                        )}
+                    </TableBody>
+                </Table>
+            </> : <div className={"flex flex-col items-center justify-center w-full h-[400px]"}><Loader/></div>}
+            <div className={"w-full flex justify-between items-end p-5"}>
+                <DateInput
+                    className={"w-80"}
+                    label="Start date"
+                    defaultValue={parseDate("2024-01-01")}
+                    value={startDate}
+                    onChange={setStartDate}
+                    labelPlacement="outside"
+                    endContent={
+                        <CalendarBoldIcon className="text-2xl text-default-400 pointer-events-none flex-shrink-0" />
+                    }
+                />
+                <Button className={"w-80"} color={"primary"} onClick={() => getPayroal({dateStart: startDate, dateEnd: endDate})}>Apply</Button>
+                <DateInput
+                    className={"w-80"}
+                    value={endDate}
+                    onChange={setEndDate}
+                    label="End date"
+                    defaultValue={parseDate("2024-01-01")}
+                    labelPlacement="outside"
+                    endContent={
+                        <CalendarBoldIcon className="text-2xl text-default-400 pointer-events-none flex-shrink-0" />
+                    }
+                />
+
+            </div>
+        </>
+    );
 }
 
-export default StatisticChart1
+export default StaticticsChart1

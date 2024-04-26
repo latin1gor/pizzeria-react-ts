@@ -40,6 +40,19 @@ export const getCustomerCount = async ({ pageNumber, pageSize, itemCategory}: Fe
     }
 }
 
+export const getOrdersCount = async ({ pageNumber, pageSize, userEmail}: FetchProductsParams) => {
+    try {
+        const params: FetchProductsParams = {};
+        if (pageNumber) params.pageNumber = pageNumber;
+        if (pageSize) params.pageSize = pageSize;
+        const response = await instance.get(`/Orders/user/${userEmail}`, {params});
+
+        return response.data;
+    } catch (error) {
+        console.error("Error while checking authentication:", error);
+    }
+}
+
 
 export const deleteCustomer = async (id: string) => {
     try {

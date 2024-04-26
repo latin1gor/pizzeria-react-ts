@@ -13,11 +13,11 @@ const Statistics = ( ) => {
     return <div className={"flex flex-col items-center gap-7 py-7"}>
         <StatisticsCards/>
         <StatisticChart1/>
-        <StatisticsChart2/>
+        {/*<StatisticsChart2/>*/}
         <StatisticsChart3/>
         <StatisticsChart4/>
         <StatisticsChart5/>
-        <StatisticsChart6/>
+        {/*<StatisticsChart6/>*/}
     </div>;
 
 }

@@ -7,6 +7,7 @@ export interface FetchProductsParams {
     pageNumber?: number | null
     pageSize?: number | null
     itemCategory?: string | null
+    userEmail?: string
 }
 export const getProducts = createAsyncThunk<any, FetchProductsParams>("product/getProducts", async ({ pageNumber, pageSize, itemCategory}, { rejectWithValue }) => {
     try {
@@ -17,7 +18,18 @@ export const getProducts = createAsyncThunk<any, FetchProductsParams>("product/g
         const response = await instance.get("/Items", {params});
         return response.data;
     } catch (error) {
-        Cookies.remove("jwt");
+        console.error("Error while checking authentication:", error);
+    }
+});
+
+export const getOrders = createAsyncThunk<any, FetchProductsParams>("orders/getOrders", async ({ pageNumber, pageSize, userEmail}, { rejectWithValue }) => {
+    try {
+        const params: FetchProductsParams = {};
+        if (pageNumber) params.pageNumber = pageNumber;
+        if (pageSize) params.pageSize = pageSize;
+        const response = await instance.get(`/Orders/user/${userEmail}`, {params});
+        return response.data;
+    } catch (error) {
         console.error("Error while checking authentication:", error);
     }
 });
@@ -33,7 +45,6 @@ export const getProductsCount = async ({ pageNumber, pageSize, itemCategory}: Fe
 
         return response.data;
     } catch (error) {
-        Cookies.remove("jwt");
         console.error("Error while checking authentication:", error);
     }
 

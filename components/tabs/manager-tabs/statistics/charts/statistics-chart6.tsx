@@ -28,7 +28,6 @@ export const entities = [{id: 1, title: 'Days'},
 const StatisticChart6 = () => {
     const [data, setData] = useState(null)
     const [startDate, setStartDate] = useState<DateValue>(parseDate("2024-01-01"));
-    const [endDate, setEndDate] = useState<DateValue>(parseDate("2024-04-15"))
     const [selectedEntity, setSelectedEntity] = React.useState<Selection>(new Set(["Days"]));
 
     const selectedValue = useMemo(
@@ -38,14 +37,13 @@ const StatisticChart6 = () => {
     const getSale = async ({dateStart, dateEnd}: any) => {
         const formattedStart = formatDate(dateStart)
         const formattedEnd = formatDate(dateEnd)
-        getStatistics({dateStart: formattedStart, dateEnd: formattedEnd, uri: 'StaffOrdersInfo', entity: selectedValue}).then((res) => {
+        getStatistics({date: formattedStart, uri: 'StaffOrdersInfo', entity: selectedValue}).then((res) => {
             setData(res)
         } )
     }
     useEffect(() => {
         const formattedStart = formatDate(startDate)
-        const formattedEnd = formatDate(endDate)
-        getStatistics({dateStart: formattedStart,  dateEnd: formattedEnd , uri: 'StaffOrdersInfo', entity: selectedValue}).then((res) => {
+        getStatistics({date: formattedStart , uri: 'StaffOrdersInfo', entity: selectedValue}).then((res) => {
             setData(res)
         })
     }, [selectedValue]);
@@ -102,7 +100,7 @@ const StatisticChart6 = () => {
         <div className={"w-full flex justify-between items-end p-5"}>
             <DateInput
                 className={"w-80"}
-                label="Start date"
+                label="Date"
                 defaultValue={parseDate("2024-01-01")}
                 value={startDate}
                 onChange={setStartDate}
@@ -111,18 +109,8 @@ const StatisticChart6 = () => {
                     <CalendarBoldIcon className="text-2xl text-default-400 pointer-events-none flex-shrink-0" />
                 }
             />
-            <Button className={"w-80"} color={"primary"} onClick={() => getSale({dateStart: startDate, dateEnd: endDate})}>Apply</Button>
-            <DateInput
-                className={"w-80"}
-                value={endDate}
-                onChange={setEndDate}
-                label="End date"
-                defaultValue={parseDate("2024-01-01")}
-                labelPlacement="outside"
-                endContent={
-                    <CalendarBoldIcon className="text-2xl text-default-400 pointer-events-none flex-shrink-0" />
-                }
-            />
+            <Button className={"w-80"} color={"primary"} onClick={() => getSale({date: startDate})}>Apply</Button>
+
 
         </div>
     </div>
