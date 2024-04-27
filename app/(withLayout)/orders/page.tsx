@@ -110,7 +110,7 @@ const Orders = () => {
                     <div className="relative flex items-end gap-2">
 
                         {order.orderItems.map(item => (
-                            <>{item.item.itemSize}</>
+                            <>{item.item.itemSize} </>
                         )) }
 
                     </div>
@@ -126,7 +126,7 @@ const Orders = () => {
                     <div className="relative flex items-end gap-2">
 
                         {order.orderItems.map(item => (
-                            <>{item.quantity}</>
+                            <>{item.quantity} </>
                         )) }
 
                     </div>
@@ -143,7 +143,7 @@ const Orders = () => {
                     <div className="relative flex items-end gap-2">
 
                         {order.orderItems.map(item => (
-                            <>{item.item.itemName}</>
+                            <>[{item.item.itemName}]</>
                         )) }
 
                     </div>
@@ -153,7 +153,7 @@ const Orders = () => {
                     <div className="relative flex items-end gap-2">
 
                         {order.orderItems.map(item => (
-                            <>{item.item.itemCategory}</>
+                            <>{item.item.itemCategory} </>
                         )) }
 
                     </div>
