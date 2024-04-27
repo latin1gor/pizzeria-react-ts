@@ -2,7 +2,7 @@
 import React, {useEffect, useState} from 'react';
 import StatisticCard from "@/components/tabs/manager-tabs/statistics/statistics-card";
 import {useAppDispatch} from "@/hooks/useStore";
-import {getProductsCount} from "@/store/services/productService";
+import {getMonthSoldProductsCount} from "@/store/services/productService";
 import {setTotalCount} from "@/store/features/product/productSlice";
 
 const StatisticsCards = () => {
@@ -13,41 +13,49 @@ const StatisticsCards = () => {
     const [pizza, setPizza] = useState<number>(0)
 
     useEffect(() => {
-        const getPizzaCounter = async () => {
-            const res =  getProductsCount({pageNumber: null, pageSize: null, itemCategory: "Pizza"})
-            res.then(res => {
-                let count = 0
-                res.map(() => count++)
+        function getDateOneMonthAgo(): string {
+            const currentDate = new Date();
+            // Get the current month and year
+            let currentMonth = currentDate.getMonth();
+            let currentYear = currentDate.getFullYear();
+        
+            // Subtract one month
+            if (currentMonth === 0) { // If it's January, go back to December of the previous year
+                currentYear--;
+                currentMonth = 11; // December
+            } else {
+                currentMonth--; // Otherwise, just go back one month
+            }
+        
+        
+            return `${currentYear}-${++currentMonth}-${currentDate.getDate()}`;
+        }
 
-                setPizza(count)
-            })
+        function  getCurrentDate(): string {
+            const currentDate = new Date();
+
+            return `${currentDate.getFullYear()}-${1 + currentDate.getMonth()}-${currentDate.getDate()}`;
+        }
+
+        const getPizzaCounter = async () => {
+            const res = await getMonthSoldProductsCount({dateStart: getDateOneMonthAgo(), dateEnd:  getCurrentDate(), itemCategory: "Pizza"})
+
+            if(res) setPizza(res)
         }
         const getBurgerCounter = async () => {
-            const res =  getProductsCount({pageNumber: null, pageSize: null, itemCategory: "Burger"})
-            res.then(res => {
-                let count = 0
-                res.map(() => count++)
-
-                setBurger(count)
-            })
+            const res = await getMonthSoldProductsCount({dateStart:  getDateOneMonthAgo(), dateEnd: getCurrentDate(), itemCategory: "Burger"})
+                
+            if(res) setBurger(res)
         }
         const getHotdogCounter = async () => {
-            const res =  getProductsCount({pageNumber: null, pageSize: null, itemCategory: "Hotdog"})
-            res.then(res => {
-                let count = 0
-                res.map(() => count++)
-
-                setHotdog(count)
-            })
+            const res = await getMonthSoldProductsCount({dateStart: getDateOneMonthAgo(), dateEnd:  getCurrentDate(), itemCategory: "Hotdog"})
+            
+            if(res) setHotdog(res)
         }
         const getFriesCounter = async () => {
-            const res =  getProductsCount({pageNumber: null, pageSize: null, itemCategory: "Fries"})
-            res.then(res => {
-                let count = 0
-                res.map(() => count++)
-
-                setFries(count)
-            })
+            const res = await getMonthSoldProductsCount({dateStart: getDateOneMonthAgo(), dateEnd:  getCurrentDate(), itemCategory: "Fries"})
+            
+            if(res)setFries(res)
         }
 
         getBurgerCounter()

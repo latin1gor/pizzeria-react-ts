@@ -25,7 +25,7 @@ const StatisticCard = ({name, quantity}: IStatisticCard) => {
 
             </CardHeader>
             <CardBody>
-                <h2 className={"text-3xl font-bold"}> +{quantity} last month</h2>
+                <h2 className={"text-2xl font-bold"}> +{quantity} last month</h2>
             </CardBody>
             <Divider/>
 
