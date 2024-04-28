@@ -7,28 +7,27 @@ import {
     TableBody,
     TableRow,
     TableCell,
-    User,
-    Chip,
-    Tooltip,
-    getKeyValue,
-    user, DateInput, Button
+     DateInput, Button
 } from "@nextui-org/react";
 import {Loader} from "@/components/loader/loader";
 import {FaRegCheckCircle} from "react-icons/fa";
 import {GiCancel} from "react-icons/gi";
 import {DateValue, parseDate} from "@internationalized/date";
 import {formatDate} from "@/lib/utils";
-import {getStaffPayroll} from "@/store/services/statisticService";
+import {downloadXMLPayroll, getDownloads, getStaffPayroll, getStatistics} from "@/store/services/statisticService";
 import {CalendarBoldIcon} from "@nextui-org/shared-icons";
+
 const statusColorMap: any = {
     active: "success",
     paused: "danger",
     vacation: "warning",
 };
+
 interface Column {
     name: string,
     uid: string
 }
+
 const columns: Column[] = [
     {name: "POSITION", uid: "position"},
     {name: "FIRST NAME", uid: "firstName"},
@@ -39,11 +38,53 @@ const columns: Column[] = [
 
 ];
 
-
-
+export interface IDownloadParams {
+    dateStart: any
+    dateEnd: any
+    fileType: "PDF" | "XML" | "JSON"
+}
 
 
 export {columns};
+
+
+export function downloadXML(xmlData: any, filename: any) {
+    const blob = new Blob([xmlData], {type: 'application/xml'});
+    const href = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = href;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(href);
+}
+
+
+export function downloadPDF(pdfData: any, filename: any) {
+    const blob = new Blob([pdfData], { type: 'application/pdf' });
+    const href = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = href;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(href);
+}
+
+
+export function downloadJSON(jsonData: any, filename: any) {
+    const blob = new Blob([JSON.stringify(jsonData, null, 2)], { type: 'application/json' });
+    const href = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = href;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(href);
+}
 
 interface IItem {
     staffId: string,
@@ -65,24 +106,43 @@ const StaticticsChart1 = () => {
         const formattedEnd = formatDate(dateEnd)
         getStaffPayroll({dateStart: formattedStart, dateEnd: formattedEnd}).then((res) => {
             setData(res)
-        } )
+        })
     }
     useEffect(() => {
-        getStaffPayroll({dateStart: "2024-01-01",  dateEnd: "2024-01-02" }).then((res) => {
+        getStaffPayroll({dateStart: "2024-01-01", dateEnd: "2024-01-02"}).then((res) => {
             setData(res)
         })
     }, []);
 
 
 
+    const download = async ({dateStart, dateEnd, fileType}: IDownloadParams) => {
+        const formattedStart = formatDate(dateStart)
+        const formattedEnd = formatDate(dateEnd)
+        getDownloads({dateStart: formattedStart, dateEnd: formattedEnd, entity: "StaffPayroll", fileType}).then((data) => {
+            switch (fileType){
+                case "XML":
+                    downloadXML(data, `StaffPayroll.xml`);
+                    break
+                case "PDF":
+                    downloadPDF(data, `StaffPayroll.pdf`);
+                    break
+                case "JSON":
+                    downloadJSON(data, `StaffPayroll.json`);
+                    break
+
+            }
+
+        })
+    }
+
 
     const renderCell = React.useCallback((item: IItem, columnKey: any) => {
-        const cellValue = item[columnKey];
+        const cellValue: any = item[columnKey];
         switch (columnKey) {
             case "position":
                 return (
                     <div className="relative flex items-end gap-2">
-
                         {item.position}
                     </div>
                 );
@@ -95,9 +155,7 @@ const StaticticsChart1 = () => {
             case "lastName":
                 return (
                     <div className="relative flex items-end gap-2">
-
                         {item.lastName}
-
                     </div>
                 );
             case "hoursWorked":
@@ -110,20 +168,15 @@ const StaticticsChart1 = () => {
             case "hourlyRate":
                 return (
                     <div className="relative flex items-end gap-2">
-
                         {item.hourlyRate}
-
                     </div>
                 );
             case "payroll":
                 return (
                     <div className="relative flex items-end gap-2">
-
                         {item.payroll}
-
                     </div>
                 );
-
             default:
                 return cellValue;
         }
@@ -135,10 +188,7 @@ const StaticticsChart1 = () => {
                 <h2 className={"text-2xl font-bold"}>PayrollStaff</h2>
             </div>
             {data ? <>
-
-
                 <Table aria-label="Example table with custom cells" className={"min-h-[400px]"}>
-
                     <TableHeader columns={columns}>
                         {(column) => (
                             <TableColumn key={column.uid} align={column.uid === "actions" ? "center" : "start"}>
@@ -164,10 +214,11 @@ const StaticticsChart1 = () => {
                     onChange={setStartDate}
                     labelPlacement="outside"
                     endContent={
-                        <CalendarBoldIcon className="text-2xl text-default-400 pointer-events-none flex-shrink-0" />
+                        <CalendarBoldIcon className="text-2xl text-default-400 pointer-events-none flex-shrink-0"/>
                     }
                 />
-                <Button className={"w-80"} color={"primary"} onClick={() => getPayroal({dateStart: startDate, dateEnd: endDate})}>Apply</Button>
+                <Button className={"w-80"} color={"primary"}
+                        onClick={() => getPayroal({dateStart: startDate, dateEnd: endDate})}>Apply</Button>
                 <DateInput
                     className={"w-80"}
                     value={endDate}
@@ -176,10 +227,20 @@ const StaticticsChart1 = () => {
                     defaultValue={parseDate("2024-01-01")}
                     labelPlacement="outside"
                     endContent={
-                        <CalendarBoldIcon className="text-2xl text-default-400 pointer-events-none flex-shrink-0" />
+                        <CalendarBoldIcon className="text-2xl text-default-400 pointer-events-none flex-shrink-0"/>
                     }
                 />
-
+            </div>
+            <div className={"flex items-center justify-between gap-4"}>
+                <Button className={"w-80"} color={"secondary"}
+                        onClick={() => download({dateStart: startDate, dateEnd: endDate, fileType: "XML"})}>Download
+                    XML</Button>
+                <Button className={"w-80"} color={"secondary"}
+                        onClick={() => download({dateStart: startDate, dateEnd: endDate, fileType: "JSON"})}>Download
+                    JSON</Button>
+                <Button className={"w-80"} color={"secondary"}
+                        onClick={() => download({dateStart: startDate, dateEnd: endDate, fileType: "PDF"})}>Download
+                    PDF</Button>
             </div>
         </>
     );

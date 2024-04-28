@@ -28,7 +28,7 @@ export const entities = [{id: 1, title: 'Days'},
 const StatisticChart5 = () => {
     const [data, setData] = useState(null)
     const [startDate, setStartDate] = useState<DateValue>(parseDate("2024-01-01"));
-    const [endDate, setEndDate] = useState<DateValue>(parseDate("2024-04-15"))
+    const [endDate, setEndDate] = useState<DateValue>(parseDate("2024-01-02"))
     const [selectedEntity, setSelectedEntity] = React.useState<Selection>(new Set(["Days"]));
 
     const selectedValue = useMemo(

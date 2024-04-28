@@ -13,29 +13,7 @@ const StatisticsCards = () => {
     const [pizza, setPizza] = useState<number>(0)
 
     useEffect(() => {
-        function getDateOneMonthAgo(): string {
-            const currentDate = new Date();
-            // Get the current month and year
-            let currentMonth = currentDate.getMonth();
-            let currentYear = currentDate.getFullYear();
-        
-            // Subtract one month
-            if (currentMonth === 0) { // If it's January, go back to December of the previous year
-                currentYear--;
-                currentMonth = 11; // December
-            } else {
-                currentMonth--; // Otherwise, just go back one month
-            }
-        
-        
-            return `${currentYear}-${++currentMonth}-${currentDate.getDate()}`;
-        }
 
-        function  getCurrentDate(): string {
-            const currentDate = new Date();
-
-            return `${currentDate.getFullYear()}-${1 + currentDate.getMonth()}-${currentDate.getDate()}`;
-        }
 
         const getPizzaCounter = async () => {
             const res = await getMonthSoldProductsCount({dateStart: getDateOneMonthAgo(), dateEnd:  getCurrentDate(), itemCategory: "Pizza"})
