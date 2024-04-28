@@ -81,10 +81,6 @@ const StaticticsChart1 = () => {
         })
     }, []);
 
-
-
-
-
     const renderCell = React.useCallback((item: IItem, columnKey: any) => {
         const cellValue: any = item[columnKey];
         switch (columnKey) {
@@ -97,7 +93,7 @@ const StaticticsChart1 = () => {
             case "firstName":
                 return (
                     <div className="flex flex-col">
-                        <p className="text-bold text-sm capitalize text-default-400">{item.firstName}}</p>
+                        <p className="text-bold text-sm capitalize text-default-400">{item.firstName}</p>
                     </div>
                 );
             case "lastName":
