@@ -36,7 +36,6 @@ const columns: Column[] = [
     {name: "HOURS WORKED", uid: "hoursWorked"},
     {name: "HOURLY RATE", uid: "hourlyRate"},
     {name: "PAYROLL", uid: "payroll"},
-
 ];
 
 export interface IDownloadParams {
