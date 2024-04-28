@@ -10,7 +10,7 @@ import {
     AreaChart
 } from 'recharts';
 import {getStaffPayroll, getStatistics, IStatisticParams} from "@/store/services/statisticService";
-import {Button, CalendarDate, DateInput, Select, SelectItem, TimeInput} from "@nextui-org/react";
+import {Button, CalendarDate, DateInput, Input, Select, SelectItem, TimeInput} from "@nextui-org/react";
 import {DateValue, parseDate} from "@internationalized/date";
 import {CalendarBoldIcon} from "@nextui-org/shared-icons";
 import {formatDate, formatTime} from "@/lib/utils";
@@ -29,8 +29,8 @@ const StatisticChart2 = () => {
     const [data, setData] = useState(null)
     const [startDate, setStartDate] = useState<DateValue>(parseDate("2024-01-01"));
     const [endDate, setEndDate] = useState<DateValue>(parseDate("2024-01-15"))
-    const [selectedEntity, setSelectedEntity] = React.useState<Selection>(new Set(["Days"]));
-
+    const [selectedEntity, setSelectedEntity] = useState<Selection>(new Set(["Days"]));
+    const [category, setCategory] = useState<string>("Pizza")
     const selectedValue = useMemo(
         () => Array.from(selectedEntity).join(", ").replaceAll("_", " "),
         [selectedEntity],
@@ -38,14 +38,16 @@ const StatisticChart2 = () => {
     const getSale = async ({dateStart, dateEnd}: any) => {
         const formattedStart = formatDate(dateStart)
         const formattedEnd = formatDate(dateEnd)
-        getStatistics({dateStart: formattedStart, dateEnd: formattedEnd, uri: 'Sales', entity: selectedValue}).then((res) => {
+        // @ts-ignore
+        getStatistics({dateStart: formattedStart, dateEnd: formattedEnd, uri: 'Sales', entity: selectedValue, itemCategory: category}).then((res) => {
             setData(res)
         } )
     }
     useEffect(() => {
         const formattedStart = formatDate(startDate)
         const formattedEnd = formatDate(endDate)
-        getStatistics({dateStart: formattedStart,  dateEnd: formattedEnd , uri: 'Sales', entity: selectedValue}).then((res) => {
+        // @ts-ignore
+        getStatistics({dateStart: formattedStart,  dateEnd: formattedEnd , uri: 'Sales', entity: selectedValue, itemCategory: category}).then((res) => {
             setData(res)
         })
     }, [selectedValue]);
@@ -84,7 +86,6 @@ const StatisticChart2 = () => {
                             bottom: 0,
                         }}
                     >
-
                         <CartesianGrid strokeDasharray="3 3" />
                         <XAxis dataKey="salesDate" tickFormatter={(value) => value.substring(0, 10)} />
                         <YAxis />
@@ -119,6 +120,8 @@ const StatisticChart2 = () => {
                     <CalendarBoldIcon className="text-2xl text-default-400 pointer-events-none flex-shrink-0" />
                 }
             />
+
+            <Input onValueChange={setCategory} value={category} />
 
         </div>
     </div>

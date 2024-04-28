@@ -9,7 +9,7 @@ import StatisticsChart6 from "@/components/tabs/manager-tabs/statistics/charts/s
 
 const Statistics = ( ) => {
     return <div className={"flex flex-col items-center gap-7 py-7"}>
-        {/*<StatisticsCards/>*/}
+        <StatisticsCards/>
         <StatisticsChart1/>
         <StatisticsChart2/>
         <StatisticsChart3/>

@@ -15,6 +15,7 @@ import {DateValue, parseDate} from "@internationalized/date";
 import {CalendarBoldIcon} from "@nextui-org/shared-icons";
 import {formatDate, formatTime} from "@/lib/utils";
 import {Selection} from "@react-types/shared";
+import DownloadSection from "@/components/tabs/manager-tabs/statistics/charts/download-section";
 
 
 interface IEntities {
@@ -36,7 +37,6 @@ const StatisticChart6 = () => {
     );
     const getSale = async ({dateStart, dateEnd}: any) => {
         const formattedStart = formatDate(dateStart)
-        const formattedEnd = formatDate(dateEnd)
         getStatistics({date: formattedStart, uri: 'StaffOrdersInfo', entity: selectedValue}).then((res) => {
             setData(res)
         } )
@@ -113,6 +113,8 @@ const StatisticChart6 = () => {
 
 
         </div>
+        <DownloadSection date={startDate} entity={"StaffOrdersInfo"} />
+
     </div>
 }
 

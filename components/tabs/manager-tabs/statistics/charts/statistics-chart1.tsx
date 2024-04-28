@@ -16,6 +16,7 @@ import {DateValue, parseDate} from "@internationalized/date";
 import {formatDate} from "@/lib/utils";
 import {downloadXMLPayroll, getDownloads, getStaffPayroll, getStatistics} from "@/store/services/statisticService";
 import {CalendarBoldIcon} from "@nextui-org/shared-icons";
+import DownloadSection from "@/components/tabs/manager-tabs/statistics/charts/download-section";
 
 const statusColorMap: any = {
     active: "success",
@@ -39,52 +40,18 @@ const columns: Column[] = [
 ];
 
 export interface IDownloadParams {
-    dateStart: any
-    dateEnd: any
+    dateStart?: any
+    dateEnd?: any
+    date?: any
     fileType: "PDF" | "XML" | "JSON"
+    entity: "StaffPayroll" | "StaffOrdersInfo"
 }
 
 
 export {columns};
 
 
-export function downloadXML(xmlData: any, filename: any) {
-    const blob = new Blob([xmlData], {type: 'application/xml'});
-    const href = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = href;
-    a.download = filename;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(href);
-}
 
-
-export function downloadPDF(pdfData: any, filename: any) {
-    const blob = new Blob([pdfData], { type: 'application/pdf' });
-    const href = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = href;
-    a.download = filename;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(href);
-}
-
-
-export function downloadJSON(jsonData: any, filename: any) {
-    const blob = new Blob([JSON.stringify(jsonData, null, 2)], { type: 'application/json' });
-    const href = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = href;
-    a.download = filename;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(href);
-}
 
 interface IItem {
     staffId: string,
@@ -116,25 +83,6 @@ const StaticticsChart1 = () => {
 
 
 
-    const download = async ({dateStart, dateEnd, fileType}: IDownloadParams) => {
-        const formattedStart = formatDate(dateStart)
-        const formattedEnd = formatDate(dateEnd)
-        getDownloads({dateStart: formattedStart, dateEnd: formattedEnd, entity: "StaffPayroll", fileType}).then((data) => {
-            switch (fileType){
-                case "XML":
-                    downloadXML(data, `StaffPayroll.xml`);
-                    break
-                case "PDF":
-                    downloadPDF(data, `StaffPayroll.pdf`);
-                    break
-                case "JSON":
-                    downloadJSON(data, `StaffPayroll.json`);
-                    break
-
-            }
-
-        })
-    }
 
 
     const renderCell = React.useCallback((item: IItem, columnKey: any) => {
@@ -231,17 +179,7 @@ const StaticticsChart1 = () => {
                     }
                 />
             </div>
-            <div className={"flex items-center justify-between gap-4"}>
-                <Button className={"w-80"} color={"secondary"}
-                        onClick={() => download({dateStart: startDate, dateEnd: endDate, fileType: "XML"})}>Download
-                    XML</Button>
-                <Button className={"w-80"} color={"secondary"}
-                        onClick={() => download({dateStart: startDate, dateEnd: endDate, fileType: "JSON"})}>Download
-                    JSON</Button>
-                <Button className={"w-80"} color={"secondary"}
-                        onClick={() => download({dateStart: startDate, dateEnd: endDate, fileType: "PDF"})}>Download
-                    PDF</Button>
-            </div>
+            <DownloadSection dateStart={startDate} dateEnd={endDate} entity={"StaffPayroll"} />
         </>
     );
 }
